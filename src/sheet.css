@@ -1,0 +1,191 @@
+/*
+ * Structure of the sheet. The look (colors, radius, shadow) comes from the theme stylesheets that
+ * style the react-aria-* class names.
+ */
+
+sheet-trigger {
+  display: contents;
+}
+
+sheet-backdrop,
+sheet-panel,
+sheet-content {
+  display: block;
+}
+
+/* Closed sheets are only markup. An open one has been given its state attributes. */
+sheet-overlay {
+  display: none;
+}
+
+sheet-overlay[data-position] {
+  display: block;
+  /* absolute rather than fixed so the overlay is not clipped by iOS Safari. */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: max(var(--page-width), 100vw);
+  height: max(var(--page-height), 100dvh);
+  overflow: clip;
+  --sheet-scroll-padding-x: calc(100vw - var(--visual-viewport-width));
+  --sheet-scroll-padding-y: calc(100dvh - var(--visual-viewport-height));
+  --sheet-viewport-padding: 0px;
+}
+
+/* More content than 100lvh is visible on iOS Safari, even when the toolbar is collapsed. */
+@supports (-webkit-touch-callout: none) {
+  sheet-overlay[data-position] {
+    --sheet-viewport-padding: calc(100lvh - 100svh + 58px);
+  }
+}
+
+/* Where the sheet sits in the stage: [horizontal, vertical]. */
+sheet-overlay[data-position='top'] {
+  --sheet-x: center;
+  --sheet-y: flex-start;
+}
+sheet-overlay[data-position='bottom'] {
+  --sheet-x: center;
+  --sheet-y: flex-end;
+}
+sheet-overlay[data-position='left'] {
+  --sheet-x: flex-start;
+  --sheet-y: center;
+}
+sheet-overlay[data-position='right'] {
+  --sheet-x: flex-end;
+  --sheet-y: center;
+}
+sheet-overlay[data-position='center'] {
+  --sheet-x: center;
+  --sheet-y: center;
+}
+
+sheet-backdrop {
+  position: absolute;
+  inset: 0;
+}
+
+/* The container is two viewports long along the swipe axis and one across; the scroll position of
+   a sheet that rests at scroll 0 (top, left) is offset so that its resting place is on screen. */
+[data-sheet-scroll] {
+  position: absolute;
+  top: var(--sheet-scroll-y);
+  left: var(--sheet-scroll-x);
+  scrollbar-width: none;
+  /* The scroll geometry is physical: keep the scroll origin and the alignment left-to-right
+     whatever the document direction. */
+  direction: ltr;
+}
+
+[data-sheet-scroll='y'] {
+  width: 100dvw;
+  height: 200dvh;
+  overflow: hidden auto;
+  overscroll-behavior: none contain;
+  scroll-snap-type: y mandatory;
+}
+
+[data-sheet-scroll='x'] {
+  width: 200dvw;
+  height: 100dvh;
+  overflow: auto hidden;
+  overscroll-behavior: contain none;
+  scroll-snap-type: x mandatory;
+}
+
+[data-sheet-scroll='y'][data-rests-at-start='true'] {
+  top: calc(var(--sheet-scroll-y) - 100dvh);
+}
+
+[data-sheet-scroll='x'][data-rests-at-start='true'] {
+  left: calc(var(--sheet-scroll-x) - 100dvw);
+}
+
+[data-sheet-stage] {
+  position: absolute;
+  width: 100dvw;
+  height: 100dvh;
+  display: flex;
+}
+
+[data-sheet-scroll='y'] > [data-sheet-stage] {
+  left: 0;
+  flex-direction: column;
+  align-items: var(--sheet-x);
+  justify-content: var(--sheet-y);
+}
+
+[data-sheet-scroll='x'] > [data-sheet-stage] {
+  top: 0;
+  flex-direction: row;
+  align-items: var(--sheet-y);
+  justify-content: var(--sheet-x);
+}
+
+/* Snap markers: a viewport long along the swipe axis, so that their start or end edge lands at the
+   snap position. The scroller gives them their offsets and alignment. */
+[data-sheet-snap] {
+  position: absolute;
+}
+
+[data-sheet-scroll='y'] > [data-sheet-snap] {
+  left: 0;
+  width: 1px;
+  height: 100dvh;
+}
+
+[data-sheet-scroll='x'] > [data-sheet-snap] {
+  top: 0;
+  width: 100dvw;
+  height: 1px;
+}
+
+[data-sheet-snap='start'] {
+  top: 0;
+  left: 0;
+}
+
+sheet-panel {
+  position: relative;
+}
+
+/* Visually hidden, but reachable by assistive technology. */
+[data-sheet-dismiss] {
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+  white-space: nowrap;
+}
+
+[data-sheet-dismiss] > button {
+  width: 1px;
+  height: 1px;
+}
+
+[data-sheet-detents] {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+[data-sheet-detent] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+}
+
+sheet-content {
+  width: 100%;
+  height: 100%;
+}
+
+[data-sheet-snap='center'] {
+  scroll-snap-align: start;
+}

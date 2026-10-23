@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>sheet-native demo</title>
+    <link rel="stylesheet" href="../styles/theme.css" />
+    <link rel="stylesheet" href="../styles/Sheet.css" />
+    <link rel="stylesheet" href="../src/sheet.css" />
+    <style>
+      body { margin: 0; padding: 16px; font-family: system-ui; display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
+    </style>
+    <script type="module" src="../src/index.js"></script>
+  </head>
+  <body>
+    <h1>sheet-native</h1>
+
+    <!-- 1. Basic bottom sheet -->
+    <sheet-trigger>
+      <button class="react-aria-Button" id="open-basic">Basic sheet</button>
+      <sheet-overlay>
+        <sheet-backdrop swipe-animation="sheet-backdrop"></sheet-backdrop>
+        <sheet-panel overscroll-padding stack-animation="sheet-scale-back">
+          <div class="sheet-handle"></div>
+          <sheet-content>
+            <h2 slot="title" class="react-aria-Heading">Basic sheet</h2>
+            <p slot="description">Swipe down, press Escape or use the button to close.</p>
+            <button slot="close" class="react-aria-Button">Close</button>
+          </sheet-content>
+        </sheet-panel>
+      </sheet-overlay>
+    </sheet-trigger>
+
+    <!-- 2. Snap points: opens at 180px, then 50% of the sheet -->
+    <sheet-trigger>
+      <button class="react-aria-Button" id="open-snap">Snap points</button>
+      <sheet-overlay snap-points="180, 50%">
+        <sheet-backdrop swipe-animation="sheet-backdrop" swipe-animation-range="1"></sheet-backdrop>
+        <sheet-panel overscroll-padding stack-animation="sheet-scale-back">
+          <div class="sheet-handle"></div>
+          <sheet-content>
+            <h2 slot="title" class="react-aria-Heading">Snap points</h2>
+            <p slot="description">Opens at 180px. Swipe up for 50%, then full height.</p>
+            <button slot="close" class="react-aria-Button">Close</button>
+            <div style="height: 800px">Filler text, 800px tall.</div>
+          </sheet-content>
+        </sheet-panel>
+      </sheet-overlay>
+    </sheet-trigger>
+
+    <!-- 3. Non-dismissible: blocks swipe, Escape and outside press -->
+    <sheet-trigger>
+      <button class="react-aria-Button" id="open-locked">Non-dismissible</button>
+      <sheet-overlay prevent-dismissal>
+        <sheet-backdrop swipe-animation="sheet-backdrop"></sheet-backdrop>
+        <sheet-panel overscroll-padding stack-animation="sheet-scale-back">
+          <sheet-content>
+            <h2 slot="title" class="react-aria-Heading">Non-dismissible</h2>
+            <p slot="description">Only the button closes this sheet.</p>
+            <button slot="close" class="react-aria-Button">Close</button>
+          </sheet-content>
+        </sheet-panel>
+      </sheet-overlay>
+    </sheet-trigger>
+
+    <!-- 4. Stacked: a nested sheet-trigger inside the parent's content -->
+    <sheet-trigger>
+      <button class="react-aria-Button" id="open-stack">Stacked sheets</button>
+      <sheet-overlay>
+        <sheet-backdrop swipe-animation="sheet-backdrop"></sheet-backdrop>
+        <sheet-panel overscroll-padding stack-animation="sheet-scale-back">
+          <div class="sheet-handle"></div>
+          <sheet-content>
+            <h2 slot="title" class="react-aria-Heading">Parent sheet</h2>
+            <button slot="close" class="react-aria-Button">Close</button>
+            <sheet-trigger>
+              <button class="react-aria-Button" id="open-child">Open child</button>
+              <sheet-overlay>
+                <sheet-backdrop swipe-animation="sheet-backdrop"></sheet-backdrop>
+                <sheet-panel overscroll-padding stack-animation="sheet-scale-back">
+                  <div class="sheet-handle"></div>
+                  <sheet-content>
+                    <h2 slot="title" class="react-aria-Heading">Child sheet</h2>
+                    <button slot="close" class="react-aria-Button">Close child</button>
+                  </sheet-content>
+                </sheet-panel>
+              </sheet-overlay>
+            </sheet-trigger>
+          </sheet-content>
+        </sheet-panel>
+      </sheet-overlay>
+    </sheet-trigger>
+
+    <!-- 5. Right-hand sheet -->
+    <sheet-trigger>
+      <button class="react-aria-Button" id="open-right">Right sheet</button>
+      <sheet-overlay position="right">
+        <sheet-backdrop swipe-animation="sheet-backdrop"></sheet-backdrop>
+        <sheet-panel overscroll-padding stack-animation="sheet-scale-back">
+          <div class="sheet-handle"></div>
+          <sheet-content>
+            <h2 slot="title" class="react-aria-Heading">Right sheet</h2>
+            <button slot="close" class="react-aria-Button">Close</button>
+          </sheet-content>
+        </sheet-panel>
+      </sheet-overlay>
+    </sheet-trigger>
+  </body>
+</html>
