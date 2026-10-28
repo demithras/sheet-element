@@ -1,3 +1,4 @@
+import '../src/index.js';
 // Playground: builds a sheet from the form options, shows its code, logs openchange events.
 // Component code lives in ../src; this file only drives it through documented attributes.
 
@@ -100,7 +101,9 @@ function logEvent(detail) {
 }
 
 /** Builds a fresh sheet tree from the current options and opens it. */
-function openSheet() {
+async function openSheet() {
+  // The button can be pressed before the component module has loaded.
+  await customElements.whenDefined('sheet-overlay');
   const o = readOptions();
   const stage = $('stage');
   stage.replaceChildren();

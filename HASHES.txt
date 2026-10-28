@@ -4,7 +4,7 @@
 bacb201c04e37b96e5bcfd246d34902433d526357a90aec407ffeb19dfb9cf6c  ./example/index.html
 bd9c7fa0afeb7cb9c1964ef3a8bde70964cedf7cac0e6c7260962e34237a944a  ./example/playground.css
 f744b9456af55a4dfeee35c474fae9d993273c3dc1241d388e9e45e9a2c44aa9  ./example/playground.html
-99dfc16c214314422ef825549ad27b62141ff0fec7a0f060c508a0db306b1ff9  ./example/playground.js
+ff92f80f0cc70d193525754490150e57cbebc14a5eb6c2c29e9202abd35e62fe  ./example/playground.js
 c95bae1d1ce0235ecccd3560b772ec1efb97f348a79f0fbe0a634f0c2ccefe2c  ./LICENSE
 3e77739d1a2a5cd3df0bc499e925d0ae23cb5cb8d4ebdd80a6a50df10fb3a081  ./NOTICE
 4187285e84152b9ceb831290184f7b86fb9110cc3b5fc4566d6ceca053d932ea  ./README.md
