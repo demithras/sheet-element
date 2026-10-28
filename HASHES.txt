@@ -1,10 +1,13 @@
 014fd3d9fd7cb207012eb53b840e75b7d35537afc3191f4319eddbf0ef90c750  ./.github/workflows/dist-check.yml
 75c41cbd73c894437faf9ac2591c652cc0ce150f4bea06da9dd41c20ea6d06cc  ./dist/sheet-element.min.css
 7d15265e4534760e9d86c23b26ecdd86242ba1bcc29aecb713fd7be241024915  ./dist/sheet-element.min.js
-7b2439e107f2e30bd88c4069d28f1a057daaa70096b6354ac79e2638c95b41f3  ./example/index.html
+bacb201c04e37b96e5bcfd246d34902433d526357a90aec407ffeb19dfb9cf6c  ./example/index.html
+bd9c7fa0afeb7cb9c1964ef3a8bde70964cedf7cac0e6c7260962e34237a944a  ./example/playground.css
+f744b9456af55a4dfeee35c474fae9d993273c3dc1241d388e9e45e9a2c44aa9  ./example/playground.html
+99dfc16c214314422ef825549ad27b62141ff0fec7a0f060c508a0db306b1ff9  ./example/playground.js
 c95bae1d1ce0235ecccd3560b772ec1efb97f348a79f0fbe0a634f0c2ccefe2c  ./LICENSE
 3e77739d1a2a5cd3df0bc499e925d0ae23cb5cb8d4ebdd80a6a50df10fb3a081  ./NOTICE
-13dbde52aba0c2a786741de64c1c5f1273618adc604ca59ea3a75783b75c33e4  ./README.md
+4187285e84152b9ceb831290184f7b86fb9110cc3b5fc4566d6ceca053d932ea  ./README.md
 2adf1b7342051f30a4dbcabcfa7a283705cccfc7300c58e067eab01dea6c4e42  ./scripts/build-dist.sh
 78234b6557b538739dac0e60ca4c84433642a9dcad78f37d8a9c2ee4ee2c3598  ./src/animation.js
 56608e08aa542f99144dd786bba655c9dcc16c26a0a8913564120ebe5366c1ba  ./src/geometry.js

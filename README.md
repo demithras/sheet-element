@@ -2,6 +2,10 @@
 
 A vanilla custom-elements clone of the [React Aria Sheet](https://react-aria.adobe.com/Sheet). It uses the same mechanism as the original: native scrolling, scroll-snap and scroll-driven animations (`view-timeline`), with no gesture code (no touch or pointer handlers move the sheet). Zero runtime dependencies, no build step: ES modules and CSS that the browser loads directly.
 
+## Demo
+
+Try every option in the [playground](https://demithras.github.io/sheet-element/example/playground.html), or open the [basic examples](https://demithras.github.io/sheet-element/example/).
+
 ## Install
 
 Copy `src/` and `styles/` into your project, then:

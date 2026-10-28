@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>sheet-native playground</title>
+    <link rel="stylesheet" href="../styles/theme.css" />
+    <link rel="stylesheet" href="../styles/Sheet.css" />
+    <link rel="stylesheet" href="../src/sheet.css" />
+    <link rel="stylesheet" href="playground.css" />
+    <script type="module" src="../src/index.js"></script>
+    <script type="module" src="playground.js"></script>
+  </head>
+  <body>
+    <main>
+      <h1>Sheet playground</h1>
+      <section class="panel" aria-labelledby="pg-title">
+        <h2 id="pg-title">Playground</h2>
+        <div class="controls">
+          <label>position
+            <select id="position"><option value="bottom" selected>bottom (default)</option><option value="top">top</option><option value="left">left</option><option value="right">right</option><option value="start">start</option><option value="end">end</option><option value="center">center</option></select>
+          </label>
+          <label>swipe-direction
+            <select id="swipe-direction"><option value="" selected>default (follow position)</option><option value="vertical">vertical</option><option value="horizontal">horizontal</option></select>
+          </label>
+          <fieldset>
+            <label for="snap-points">snap-points</label>
+            <input type="text" id="snap-points" placeholder="e.g. 180px, 50%" />
+            <span class="presets">
+              <button type="button" class="react-aria-Button" data-preset="">none</button>
+              <button type="button" class="react-aria-Button" data-preset="280">280</button>
+              <button type="button" class="react-aria-Button" data-preset="180px, 50%">180px, 50%</button>
+              <button type="button" class="react-aria-Button" data-preset="25%, 50%, 75%">25%, 50%, 75%</button>
+            </span>
+          </fieldset>
+          <label>page direction
+            <select id="dir"><option value="ltr" selected>LTR</option><option value="rtl">RTL</option></select>
+          </label>
+          <label>content
+            <select id="content"><option value="short" selected>Short text</option><option value="list">Long list</option><option value="form">Form with a text field</option><option value="nested">Nested sheet</option></select>
+          </label>
+          <label class="check"><input type="checkbox" id="prevent-dismissal" /> prevent-dismissal</label>
+          <label class="check"><input type="checkbox" id="overscroll-padding" checked /> overscroll-padding (panel)</label>
+          <label class="check"><input type="checkbox" id="backdrop-animation" checked /> backdrop swipe-animation</label>
+          <label class="check"><input type="checkbox" id="stack-animation" checked /> stack-animation (panel)</label>
+          <label class="check"><input type="checkbox" id="controlled" /> controlled mode</label>
+        </div>
+        <div class="actions">
+          <button type="button" class="react-aria-Button" id="open-sheet">Open sheet</button>
+          <button type="button" class="react-aria-Button" id="copy">Copy</button>
+        </div>
+        <pre><code id="code" aria-label="Generated code"></code></pre>
+        <h3>Event log (last 10)</h3>
+        <ol id="log" aria-live="polite"></ol>
+        <div id="stage"></div>
+      </section>
+
+      <section class="panel" aria-labelledby="gal-title">
+        <h2 id="gal-title">Gallery</h2>
+        <div class="gallery">
+          <sheet-trigger>
+            <button class="react-aria-Button" id="cart-open">Cart (4)</button>
+            <sheet-overlay>
+              <sheet-backdrop swipe-animation="sheet-backdrop"></sheet-backdrop>
+              <sheet-panel overscroll-padding stack-animation="sheet-scale-back">
+                <div class="sheet-handle"></div>
+                <sheet-content>
+                  <h2 slot="title" class="react-aria-Heading">Your cart</h2>
+                  <div id="cart-items"></div>
+                  <p class="row tight"><span>Subtotal</span><span id="cart-subtotal"></span></p>
+                  <p class="row tight"><span>Delivery</span><span id="cart-delivery"></span></p>
+                  <p class="row tight"><strong>Total</strong><strong id="cart-total"></strong></p>
+                  <button slot="close" class="react-aria-Button">Place order</button>
+                </sheet-content>
+              </sheet-panel>
+            </sheet-overlay>
+          </sheet-trigger>
+          <sheet-trigger>
+            <button class="react-aria-Button" id="open-place">Place details</button>
+            <sheet-overlay snap-points="280">
+              <sheet-backdrop swipe-animation="sheet-backdrop" swipe-animation-range="0"></sheet-backdrop>
+              <sheet-panel overscroll-padding stack-animation="sheet-scale-back">
+                <div class="sheet-handle"></div>
+                <sheet-content>
+                  <h2 slot="title" class="react-aria-Heading">Harborlight Coffee</h2>
+                  <p slot="description" class="tight">Coffee shop, 4.6 stars (212 reviews)</p>
+                  <p class="tight">12 Quay Street, Harbor Town<br />Open daily 7:00 to 18:00</p>
+                  <div class="map" role="img" aria-label="Map placeholder"></div>
+                  <button slot="close" class="react-aria-Button">Get directions</button>
+                  <div class="review"><strong>Sam</strong>: Best flat white in town.</div>
+                  <div class="review"><strong>Robin</strong>: Friendly staff, quiet mornings.</div>
+                  <div class="review"><strong>Jo</strong>: The cardamom bun is worth the queue.</div>
+                  <div class="review"><strong>Pat</strong>: Great beans to take home.</div>
+                  <div class="review"><strong>Kim</strong>: Tiny, cosy, a bit loud at noon.</div>
+                </sheet-content>
+              </sheet-panel>
+            </sheet-overlay>
+          </sheet-trigger>
+          <sheet-trigger>
+            <button class="react-aria-Button" id="open-locked">Non-dismissible</button>
+            <sheet-overlay snap-points="280" prevent-dismissal>
+              <sheet-backdrop swipe-animation="sheet-backdrop" swipe-animation-range="0"></sheet-backdrop>
+              <sheet-panel overscroll-padding stack-animation="sheet-scale-back">
+                <div class="sheet-handle"></div>
+                <sheet-content>
+                  <h2 slot="title" class="react-aria-Heading">Harborlight Coffee</h2>
+                  <p slot="description" class="tight">Coffee shop, 4.6 stars (212 reviews)</p>
+                  <p class="tight">12 Quay Street, Harbor Town<br />Open daily 7:00 to 18:00</p>
+                  <div class="map" role="img" aria-label="Map placeholder"></div>
+                  <button slot="close" class="react-aria-Button x-close" aria-label="Close">X</button>
+                  <div class="review"><strong>Sam</strong>: Best flat white in town.</div>
+                  <div class="review"><strong>Robin</strong>: Friendly staff, quiet mornings.</div>
+                  <div class="review"><strong>Jo</strong>: The cardamom bun is worth the queue.</div>
+                  <div class="review"><strong>Pat</strong>: Great beans to take home.</div>
+                  <div class="review"><strong>Kim</strong>: Tiny, cosy, a bit loud at noon.</div>
+                </sheet-content>
+              </sheet-panel>
+            </sheet-overlay>
+          </sheet-trigger>
+          <sheet-trigger>
+            <button class="react-aria-Button" id="open-settings">Sheet stack</button>
+            <sheet-overlay>
+              <sheet-backdrop swipe-animation="sheet-backdrop"></sheet-backdrop>
+              <sheet-panel overscroll-padding stack-animation="sheet-scale-back">
+                <div class="sheet-handle"></div>
+                <sheet-content>
+                  <h2 slot="title" class="react-aria-Heading">Settings</h2>
+                  <div class="field"><label for="st-home">Homepage</label><input type="text" id="st-home" value="https://example.com" /></div>
+                  <fieldset><legend>Theme</legend>
+                    <label><input type="radio" name="theme" checked /> Auto</label>
+                    <label><input type="radio" name="theme" /> Light</label>
+                    <label><input type="radio" name="theme" /> Dark</label>
+                  </fieldset>
+                  <button slot="close" class="react-aria-Button">Close</button>
+                  <sheet-trigger>
+                    <button class="react-aria-Button" id="open-account">Account</button>
+                    <sheet-overlay>
+                      <sheet-backdrop swipe-animation="sheet-backdrop"></sheet-backdrop>
+                      <sheet-panel overscroll-padding stack-animation="sheet-scale-back">
+                        <div class="sheet-handle"></div>
+                        <sheet-content>
+                          <h2 slot="title" class="react-aria-Heading">Account</h2>
+                          <div class="field"><label for="st-name">Name</label><input type="text" id="st-name" value="Alex Doe" /></div>
+                          <div class="field"><label for="st-user">Username</label><input type="text" id="st-user" value="alexdoe" /></div>
+                          <div class="field"><label for="st-mail">Email</label><input type="text" id="st-mail" value="alex@example.com" /></div>
+                          <button slot="close" class="react-aria-Button">Close</button>
+
+                  <sheet-trigger>
+                    <button class="react-aria-Button" id="open-advanced">Advanced</button>
+                    <sheet-overlay>
+                      <sheet-backdrop swipe-animation="sheet-backdrop"></sheet-backdrop>
+                      <sheet-panel overscroll-padding stack-animation="sheet-scale-back">
+                        <div class="sheet-handle"></div>
+                        <sheet-content>
+                          <h2 slot="title" class="react-aria-Heading">Advanced</h2>
+                          <fieldset><legend>Notifications</legend>
+                            <label><input type="checkbox" checked /> Email</label>
+                            <label><input type="checkbox" /> Push</label>
+                            <label><input type="checkbox" /> SMS</label>
+                          </fieldset>
+                          <button slot="close" class="react-aria-Button">Done</button>
+                        </sheet-content>
+                      </sheet-panel>
+                    </sheet-overlay>
+                  </sheet-trigger>
+                        </sheet-content>
+                      </sheet-panel>
+                    </sheet-overlay>
+                  </sheet-trigger>
+                </sheet-content>
+              </sheet-panel>
+            </sheet-overlay>
+          </sheet-trigger>
+          <sheet-trigger>
+            <button class="react-aria-Button" id="open-swipe">Swipe-linked animation</button>
+            <sheet-overlay snap-points="280">
+              <sheet-backdrop swipe-animation="sheet-backdrop" swipe-animation-range="0"></sheet-backdrop>
+              <sheet-panel overscroll-padding swipe-animation="demo-swipe">
+                <div class="sheet-handle"></div>
+                <sheet-content>
+                  <h2 slot="title" class="react-aria-Heading">Swipe-linked animation</h2>
+                  <p slot="description">Corner radius and scale follow your swipe.</p>
+                  <button slot="close" class="react-aria-Button">Close</button>
+                </sheet-content>
+              </sheet-panel>
+            </sheet-overlay>
+          </sheet-trigger>
+        </div>
+      </section>
+
+      <p class="note">A vanilla custom-elements clone of the <a href="https://react-aria.adobe.com/blog/sheet">React Aria Sheet</a>. Source: <a href="https://github.com/demithras/sheet-element">github.com/demithras/sheet-element</a>.</p>
+    </main>
+  </body>
+</html>

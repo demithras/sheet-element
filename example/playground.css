@@ -1,0 +1,56 @@
+/* Page chrome for the playground. The sheets themselves use the starter styles. */
+body {
+  margin: 0;
+  padding: 16px;
+  background: var(--background-color);
+  color: var(--text-color);
+  font-family: system-ui;
+  font-size: var(--font-size);
+}
+main { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
+h1, h2 { margin: 0 0 8px; }
+.panel { background: var(--overlay-background); border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; }
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.controls label, .controls fieldset { display: flex; flex-direction: column; gap: 4px; margin: 0; padding: 0; border: 0; min-width: 0; }
+.controls .check { flex-direction: row; align-items: center; gap: 8px; }
+select, input[type='text'], textarea {
+  font: inherit; padding: 6px 8px; color: var(--field-text-color); background: var(--gray-50);
+  border: 1px solid var(--border-color); border-radius: 8px; box-sizing: border-box; width: 100%;
+}
+.presets { display: flex; flex-wrap: wrap; gap: 6px; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+pre { margin: 12px 0 0; padding: 12px; overflow: auto; max-height: 280px; background: var(--gray-100); border-radius: 8px; font-size: 12px; }
+#log { margin: 8px 0 0; padding-left: 20px; font-size: 13px; }
+.gallery { display: flex; flex-wrap: wrap; gap: 8px; }
+.hidden-trigger button { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 8px 0; }
+.row .qty { display: flex; align-items: center; gap: 8px; }
+.map { height: 120px; border-radius: 12px; margin: 12px 0; background: linear-gradient(135deg, var(--tint-300), var(--tint-600)); }
+.field { display: flex; flex-direction: column; gap: 4px; margin: 12px 0; }
+.review { margin: 8px 0; }
+.x-close { position: absolute; top: 12px; right: 12px; z-index: 3; }
+.tight { margin: 4px 0; }
+.note { font-size: var(--font-size-sm); }
+a { color: var(--link-color); }
+
+/* Swipe-linked animation: corner radius and scale follow the swipe. */
+@keyframes demo-swipe {
+  from { border-radius: 4px; scale: 0.92; }
+  to { border-radius: 40px; scale: 1; }
+}
+
+/* Buttons: the React Aria starter Button stylesheet is not loaded here, so style them from the theme. */
+.react-aria-Button {
+  font: inherit; cursor: pointer; box-sizing: border-box; min-height: 44px; padding: var(--spacing-2) var(--spacing-4);
+  color: var(--text-color); background: var(--button-background); border: 1px solid var(--border-color);
+  border-radius: var(--radius); touch-action: manipulation;
+}
+.react-aria-Button:hover { border-color: var(--border-color-hover); color: var(--text-color-hover); }
+.react-aria-Button:active { background: var(--button-background-pressed); }
+.react-aria-Button:focus-visible { outline: 2px solid var(--focus-ring-color); outline-offset: 2px; }
+#open-sheet, .gallery > sheet-trigger > .react-aria-Button {
+  color: var(--highlight-foreground); background: var(--highlight-background); border-color: transparent;
+}
+#open-sheet:active, .gallery > sheet-trigger > .react-aria-Button:active { background: var(--highlight-background-pressed); }
+.react-aria-Button[data-preset] { min-height: 32px; padding: var(--spacing-1) var(--spacing-3); }
+.react-aria-Button.x-close { min-width: 32px; min-height: 32px; padding: 0; border-radius: 50%; }
