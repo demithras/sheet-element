@@ -1,0 +1,16 @@
+name: dist up to date
+on: [push, pull_request]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Rebuild dist/ from src/ and styles/
+        run: sh scripts/build-dist.sh
+      - name: Fail if the committed dist/ differs from a fresh build
+        run: git diff --exit-code -- dist/
+      - name: Fail if HASHES.txt is out of date
+        run: sha256sum -c --quiet HASHES.txt
