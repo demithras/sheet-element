@@ -15,6 +15,17 @@ Copy `src/` and `styles/` into your project, then:
 
 `index.js` defines all five elements. `theme.css` and `Sheet.css` are the unchanged React Aria starter styles (the look); `src/sheet.css` is the structure and must be loaded after them. Serve over HTTP (ES modules do not load from `file://`). `example/index.html` shows five working sheets; run `python3 -m http.server` in this folder and open `/example/`.
 
+### Single-file option
+
+`dist/` holds the same component as one minified file each for JavaScript and CSS (about 7 kB + 3 kB gzip, against about 21 kB + 4 kB gzip for the separate files). Copy `dist/` into your project, then:
+
+```html
+<link rel="stylesheet" href="dist/sheet-element.min.css" />
+<script type="module" src="dist/sheet-element.min.js"></script>
+```
+
+`sheet-element.min.css` already contains `theme.css`, `Sheet.css` and `src/sheet.css`, in that order; do not load them again. To use your own look instead of the React Aria starter styles, use the separate files above and leave out `theme.css` and `Sheet.css`. The bundle passes the same checks as `src/` (the 33 behaviour scenarios in Chromium and WebKit, and the look check). `scripts/build-dist.sh` rebuilds `dist/` from `src/` and `styles/` (needs Node.js; the component itself needs no build).
+
 ## Anatomy
 
 ```html
