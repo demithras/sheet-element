@@ -78,26 +78,29 @@ A `slot="close"` button closes the sheet. When open, the dialog gets `role="dial
 
 ## Browser support
 
-- Verified: Chromium (desktop); Safari on iPhone 16 / iOS 27.
-- Desktop WebKit: verified except swipes (WebKit has no trusted touch drag in the test tool).
-- Firefox: not verified. There is no fallback for missing scroll-driven animations (`view-timeline`).
+Every check below compares the clone with the React Aria original on the same browser or device.
+
+- Chromium (desktop): verified.
+- WebKit (desktop): verified, except swipes (the test tool has no trusted touch drag in WebKit).
+- Safari on iPhone 16 / iOS 27: verified, see the limits under "Not verified / known gaps".
+- Firefox (desktop): behaves like the original, including the original's gaps. Firefox has no scroll-driven animations (`view-timeline`), so animations linked to the swipe position (for example the backdrop fade while dragging) and the stacked-sheet animation do not follow the finger. The React Aria original has the same gaps in Firefox.
+- Android: not verified.
 
 ## Verified equal to React Aria Sheet
 
-- Look: 0 differences in computed styles at 390x844 and 1280x800 (Chromium and WebKit).
-- Behaviour: the 33 scenarios pass (Chromium 33 of 33; WebKit 28, 5 not run there), 3 runs each.
-- iPhone motion: resting positions after flicks, swipe events, `data-expanded`, animation progress and the middle snap position, checked against the original on the device.
+- Look: 0 differences in computed styles at 390x844 and 1280x800 in Chromium, WebKit and Firefox. The `start` / `end` positions in left-to-right and right-to-left (`dir="rtl"`) pages also show 0 differences in Chromium and WebKit.
+- Behaviour: the 33 scenarios pass (Chromium 33 of 33; WebKit 28, 5 not run there), 3 runs each. In Firefox the clone passes exactly the 21 scenarios the original passes.
+- `start` / `end` positions and RTL, and reduced motion (`prefers-reduced-motion`): same as the original in Chromium and WebKit (swipes in Chromium only).
+- Removing a `<sheet-trigger>` while its sheet is open removes the sheet and releases the page, with no `openchange`: same as the original in Chromium.
+- iPhone motion: resting positions after flicks, swipe events, `data-expanded`, animation progress, the middle snap position, controlled and uncontrolled closing (one `openchange` per close), and 60 open/close cycles (60 of 60 close, as in the original).
 
 ## Not verified / known gaps
 
-- Software keyboard: content above the keyboard is not verified; the wait until the keyboard has settled before opening is not ported.
-- iOS Safari page scroll-lock touch handling is not ported.
-- `start` / `end` positions and RTL are not verified.
-- Reduced motion is not verified.
-- No Firefox fallback.
-- If the page removes a trigger while its sheet is open, the sheet stays until it is closed.
+- Software keyboard (iPhone): the original's keyboard handling is ported (the visual-viewport height variable, keeping a focused field above the keyboard, waiting for the keyboard before an auto-focused sheet opens). On the iPhone every measured value of the clone lies inside the original's run-to-run range, but the original itself varies by more than 8 px between runs, so a strict equality check cannot decide.
+- Page scroll lock on iOS: the original's iOS-specific scroll lock (`usePreventScroll`) is ported. On iOS 27 the page behind an open sheet stays still even without it, so its effect could not be shown on that version.
+- Firefox: the gaps of the original listed under "Browser support".
 - Inherited from the original on iPhone: a long, fast drag closes a sheet with `prevent-dismissal` (the rubber-band overscroll carries it off screen). This clone behaves the same.
 
 ## Licence
 
-Apache License 2.0, see `LICENSE`. `styles/theme.css` and `styles/Sheet.css` are the unchanged React Aria starter styles from [adobe/react-spectrum](https://github.com/adobe/react-spectrum), Copyright Adobe, Apache-2.0; see `NOTICE`.
+Apache License 2.0, see `LICENSE`. This is a port of React Aria Sheet from [adobe/react-spectrum](https://github.com/adobe/react-spectrum), Copyright Adobe, Apache-2.0. `styles/theme.css` and `styles/Sheet.css` are the unchanged React Aria starter styles. `src/ios-scroll-lock.js`, `src/keyboard.js` and the visual-viewport handling in `src/sheet-overlay.js` are derived from React Aria source and modified (rewritten as plain JavaScript); the rest of `src/` reimplements the original's behaviour in plain JavaScript. See `NOTICE`.

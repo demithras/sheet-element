@@ -1,4 +1,6 @@
 import { getSwipeConfig, parseSnapPoints, resolveDirection } from './geometry.js';
+import { isIOSWebKit } from './ios-scroll-lock.js';
+import { runAfterKeyboard, willOpenKeyboard } from './keyboard.js';
 import { ModalLayer } from './modal.js';
 import { SheetPart } from './part.js';
 import { SheetScroller } from './scroller.js';
@@ -52,6 +54,8 @@ export class SheetOverlay extends SheetPart {
   #parts = [];
   #scroller = null;
   #visible = false;
+  #hasEntered = false;
+  #closeRequested = false;
   #resolveHidden = null;
 
   get open() {
@@ -174,7 +178,10 @@ export class SheetOverlay extends SheetPart {
       signal,
     });
     this.addEventListener('click', (event) => this.#onClick(event), { signal });
+    this.#hasEntered = false;
+    this.#closeRequested = false;
     this.#observeVisibility(content, signal);
+    this.#observeRest(signal);
     this.#observeViewport(signal);
 
     signal.addEventListener('abort', () => {
@@ -202,33 +209,59 @@ export class SheetOverlay extends SheetPart {
     }
   }
 
+  // Derived from React Aria Modal's visual-viewport handling, Copyright Adobe, Apache License 2.0;
+  // modified: rewritten as plain JavaScript.
   // The visual viewport shrinks when the software keyboard opens; the starter styles use the
-  // difference to keep the content above it.
+  // difference to keep the content above it. Ignored while pinch-zoomed.
   #observeViewport(signal) {
-    visualViewport.addEventListener(
-      'resize',
-      () => {
-        this.style.setProperty('--visual-viewport-width', `${visualViewport.width}px`);
-        this.style.setProperty('--visual-viewport-height', `${visualViewport.height}px`);
-      },
-      { signal },
-    );
+    const write = (width, height) => {
+      this.style.setProperty('--visual-viewport-width', `${width}px`);
+      this.style.setProperty('--visual-viewport-height', `${height}px`);
+    };
+    const update = () => {
+      if (visualViewport.scale <= 1) {
+        write(
+          visualViewport.width * visualViewport.scale,
+          visualViewport.height * visualViewport.scale,
+        );
+      }
+    };
+    visualViewport.addEventListener('resize', update, { signal });
+    if (isIOSWebKit()) {
+      // iOS reports the keyboard closing only after its animation; anticipate it from the blur.
+      window.addEventListener(
+        'blur',
+        (event) => {
+          if (visualViewport.scale <= 1 && willOpenKeyboard(event.target)) {
+            const cancel = runAfterKeyboard((isOpen) => {
+              const root = document.documentElement;
+              if (!isOpen) {
+                write(root.clientWidth, root.clientHeight);
+              }
+            });
+            signal.addEventListener('abort', cancel, { once: true });
+          }
+        },
+        { capture: true, signal },
+      );
+    }
   }
 
   // A swipe that moves the sheet entirely out of view closes it; a sheet entirely in view is expanded.
   #observeVisibility(content, signal) {
-    let hasEntered = false;
     const rootMargin = `0px 0px ${this.#scroller.viewportPadding}px 0px`;
     const observer = new IntersectionObserver(
       (entries) => {
         const entry = entries.at(-1);
         this.#visible = entry.intersectionRatio > 0;
-        hasEntered ||= this.#visible;
+        this.#hasEntered ||= this.#visible;
+        if (this.#visible) {
+          this.#closeRequested = false;
+        }
         this.#state.expanded = entry.intersectionRatio >= 1;
         this.#render();
-        if (hasEntered && !this.#visible) {
-          this.#resolveHidden?.();
-          this.requestOpen(false);
+        if (this.#hasEntered && !this.#visible) {
+          this.#closeAfterSwipe();
         }
       },
       { threshold: [0, 1], rootMargin },
@@ -237,9 +270,58 @@ export class SheetOverlay extends SheetPart {
     signal.addEventListener('abort', () => observer.disconnect());
   }
 
+  // The observer's callback can be late on iOS while the page has touch listeners, so a swipe that
+  // comes to rest at the exit also closes the sheet. Whichever trigger fires first wins.
+  #observeRest(signal) {
+    const element = this.#scroller.element;
+    const closeIfExited = () => {
+      if (this.#canCloseBySwipe() && this.#scroller.isAtExit()) {
+        this.#closeAfterSwipe();
+      }
+    };
+    if ('onscrollend' in window) {
+      element.addEventListener('scrollend', closeIfExited, { signal });
+      return;
+    }
+    let timer;
+    element.addEventListener(
+      'scroll',
+      () => {
+        clearTimeout(timer);
+        if (this.#canCloseBySwipe() && this.#scroller.isAtExit()) {
+          timer = setTimeout(closeIfExited, 100);
+        }
+      },
+      { signal },
+    );
+    signal.addEventListener('abort', () => clearTimeout(timer));
+  }
+
+  // Only a swipe: a close that is already under way is finished by the visibility observer.
+  #canCloseBySwipe() {
+    const { dismissable, exiting } = this.#state;
+    return Boolean(this.#scroller) && this.#hasEntered && dismissable && !exiting;
+  }
+
+  // At most one request per swipe-exit: a controlled page may not close the sheet at once, and both
+  // triggers would then request again.
+  #closeAfterSwipe() {
+    if (this.#closeRequested) {
+      return;
+    }
+    this.#closeRequested = true;
+    this.#visible = false;
+    this.#resolveHidden?.();
+    this.requestOpen(false);
+  }
+
   // Scrolls the sheet in. Focus moves into it and the page behind is hidden only once it has entered,
   // because moving focus or hiding content scrolls on iOS, which would interrupt the entry.
   async #enter(layer, signal) {
+    await this.#waitForKeyboard(signal);
+    if (signal.aborted) {
+      return;
+    }
     await this.#scroller.enter();
     if (signal.aborted || this.#state.exiting) {
       return;
@@ -248,6 +330,19 @@ export class SheetOverlay extends SheetPart {
     this.#scroller.settle(true);
     this.#render();
     layer.engage();
+  }
+
+  // An auto-focused field may bring up the software keyboard, which resizes the page. Focus it now
+  // and show the sheet once the keyboard has settled, so the sheet does not jump while entering.
+  async #waitForKeyboard(signal) {
+    const field = this.#panel.querySelector('[autofocus]');
+    if (navigator.maxTouchPoints && willOpenKeyboard(field)) {
+      field.focus({ preventScroll: true });
+      await new Promise((resolve) => {
+        const cancel = runAfterKeyboard(resolve);
+        signal.addEventListener('abort', () => (cancel(), resolve()), { once: true });
+      });
+    }
   }
 
   async #exit() {

@@ -156,6 +156,19 @@ export class SheetScroller {
     await this.#scrollTo(this.#restPosition(), true);
   }
 
+  /** @returns {boolean} Whether the scroll container is at a position the sheet exits at. */
+  isAtExit() {
+    const { scrollPosition, scrollSize, clientSize } = AXES[this.#axis];
+    const position = this.element[scrollPosition];
+    const far = this.element[scrollSize] - this.element[clientSize];
+    const atStart = position < 1;
+    const atEnd = position > far - 1;
+    if (this.#after && !this.#before) {
+      return atStart;
+    }
+    return this.#before && !this.#after ? atEnd : atStart || atEnd;
+  }
+
   /** Scrolls the sheet out through the nearest edge it may leave by. */
   exit() {
     this.#scrollTo(this.#exitPosition(), true);

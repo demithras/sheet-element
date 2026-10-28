@@ -12,7 +12,12 @@ import { toLength } from './geometry.js';
  * @property {number} iterations
  * @property {string} range
  * @property {'replace' | 'accumulate'} composition
+ * @property {string} [duration] Only for the time-based fallback; scroll-driven layers have none.
  */
+
+// Firefox has no view timelines. There the swipe animation plays on a clock while the sheet enters
+// and exits, as in the original, and sheets do not animate along with their descendants.
+const supportsViewTimeline = CSS.supports('animation-timeline: view()');
 
 const LAYER_PROPERTIES = {
   'animation-name': 'name',
@@ -20,6 +25,7 @@ const LAYER_PROPERTIES = {
   'animation-direction': 'direction',
   'animation-iteration-count': 'iterations',
   'animation-range': 'range',
+  'animation-duration': (layer) => layer.duration ?? 'auto',
   'animation-composition': 'composition',
   'animation-fill-mode': () => 'both',
   'animation-timing-function': () => 'linear',
@@ -69,6 +75,22 @@ export function swipeAnimationLayers(element, state) {
     [start, end] = [`calc(100% - ${end})`, `calc(100% - ${start})`];
   }
 
+  if (!supportsViewTimeline) {
+    return state.entering || state.exiting
+      ? [
+          {
+            name,
+            timeline: 'auto',
+            direction: state.exiting ? 'reverse' : 'normal',
+            iterations: 1,
+            range: 'normal',
+            composition: 'replace',
+            duration: '300ms',
+          },
+        ]
+      : [];
+  }
+
   return [
     {
       name,
@@ -88,7 +110,7 @@ export function swipeAnimationLayers(element, state) {
  * @returns {AnimationLayer[]}
  */
 export function stackAnimationLayers(name, state) {
-  if (!name) {
+  if (!name || !supportsViewTimeline) {
     return [];
   }
   return state.descendants.map((descendant, offset) => ({

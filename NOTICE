@@ -1,7 +1,17 @@
 sheet-element
 Copyright 2026 demithras
 
-This product includes styles/theme.css and styles/Sheet.css, the unchanged
-React Aria starter styles from the adobe/react-spectrum repository
-(https://github.com/adobe/react-spectrum, starters/docs/src),
-Copyright Adobe, licensed under the Apache License, Version 2.0.
+This product is a port of React Aria Sheet from the adobe/react-spectrum
+repository (https://github.com/adobe/react-spectrum), Copyright Adobe,
+licensed under the Apache License, Version 2.0.
+
+It includes:
+- styles/theme.css and styles/Sheet.css: the unchanged React Aria starter
+  styles (starters/docs/src).
+- src/ios-scroll-lock.js: derived from
+  packages/react-aria/src/overlays/usePreventScroll.ts. Modified: rewritten
+  as plain JavaScript.
+- src/keyboard.js: derived from the keyboard handling of React Aria Sheet
+  and Modal. Modified: rewritten as plain JavaScript.
+- src/sheet-overlay.js: the visual-viewport handling is derived from React
+  Aria Modal. Modified: rewritten as plain JavaScript.

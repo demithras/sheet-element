@@ -4,6 +4,8 @@
  * returns to where it was when the sheet closes.
  */
 
+import { isIOSWebKit, lockIOSScroll } from './ios-scroll-lock.js';
+
 const TABBABLE = 'a[href], button, input, select, textarea, [tabindex]';
 
 let scrollLocks = 0;
@@ -11,7 +13,11 @@ let restoreScroll = () => {};
 
 // Counted, because stacked sheets share one lock.
 function lockPageScroll() {
-  if (scrollLocks++ === 0) {
+  if (scrollLocks++ > 0) {
+    // Already locked by a sheet below this one.
+  } else if (isIOSWebKit()) {
+    restoreScroll = lockIOSScroll();
+  } else {
     const root = document.documentElement;
     const previous = { overflow: root.style.overflow, gutter: root.style.scrollbarGutter };
     // Keep the layout from shifting when the scrollbar disappears.
@@ -73,7 +79,8 @@ export class ModalLayer {
       'pointerup',
       (event) => {
         if (pressStartedOutside && isOutside(event) && canDismiss()) {
-          dismiss();
+          // Deferred: Firefox cancels a smooth scroll that starts inside the click's own events.
+          setTimeout(dismiss);
         }
         pressStartedOutside = false;
       },
@@ -90,10 +97,10 @@ export class ModalLayer {
     );
   }
 
-  /** Hides the rest of the page and moves focus into the dialog. */
+  /** Hides the rest of the page and moves focus into the dialog, or to its `autofocus` field. */
   engage() {
     this.#restoreInert = hideOutside(this.#root);
-    this.#dialog.focus({ preventScroll: true });
+    (this.#dialog.querySelector('[autofocus]') ?? this.#dialog).focus({ preventScroll: true });
   }
 
   #onKeyDown(event, canDismiss, dismiss) {

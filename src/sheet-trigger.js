@@ -35,4 +35,14 @@ export class SheetTrigger extends HTMLElement {
     // Looked up here because an open overlay is moved out of the trigger.
     this.#overlay ??= this.querySelector(':scope > sheet-overlay');
   }
+
+  disconnectedCallback() {
+    // An open overlay lives in the body, so removing the trigger must unmount it explicitly. The
+    // overlay is never moved by the trigger, so a trigger still detached after a microtask is gone.
+    queueMicrotask(() => {
+      if (!this.isConnected) {
+        this.#overlay?.remove();
+      }
+    });
+  }
 }
