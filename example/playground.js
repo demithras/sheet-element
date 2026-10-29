@@ -4,12 +4,37 @@ import '../src/index.js';
 
 const $ = (id) => document.getElementById(id);
 
+const SENTENCES = [
+  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
+  'Vivamus lacinia odio vitae vestibulum vestibulum, cras venenatis euismod malesuada nisi.',
+  'Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.',
+  'Integer posuere erat a ante venenatis dapibus posuere velit aliquet, donec ullamcorper nulla.',
+  'Maecenas faucibus mollis interdum, nullam quis risus eget urna mollis ornare vel eu leo.',
+  'Curabitur blandit tempus porttitor, etiam porta sem malesuada magna mollis euismod sed posuere.',
+  'Aenean eu leo quam, pellentesque ornare sem lacinia quam venenatis vestibulum fusce dapibus.',
+  'Duis mollis est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.',
+  'Sed posuere consectetur est at lobortis, morbi leo risus, porta ac consectetur ac vestibulum.',
+];
+// Eight paragraphs of eight sentences each, rotated so that no two paragraphs are identical.
+const LOREM = Array.from({ length: 8 }, (_, i) => Array.from({ length: 8 }, (_, j) => SENTENCES[(i + j) % SENTENCES.length]).join(' '));
+
 const CONTENT = {
   short: `<p slot="description">A short sheet. Swipe, press Escape or use the button.</p>`,
   list: `<p slot="description">A long list. It scrolls once the sheet is fully expanded.</p>
 <ul>${Array.from({ length: 30 }, (_, i) => `<li>Item ${i + 1}</li>`).join('')}</ul>`,
   form: `<p slot="description">Focus the field to test the software keyboard.</p>
 <label>Name <input type="text" name="name" /></label>`,
+  longText: `<p slot="description">Long text. Expand the sheet fully, then scroll the text.</p>
+${LOREM.map((p) => `<p>${p}</p>`).join('\n')}`,
+  formFields: `<p slot="description">Tap a field to test the software keyboard; move between fields with the keyboard open.</p>
+<div class="fields">
+  <label>Name <input type="text" name="name" autocomplete="off" /></label>
+  <label>Email <input type="email" name="email" /></label>
+  <label>Phone <input type="tel" name="phone" /></label>
+  <label>Address <input type="text" name="address" /></label>
+  <label>Comment <textarea name="comment" rows="4"></textarea></label>
+  <button type="button" slot="close" class="react-aria-Button">Submit</button>
+</div>`,
   nested: `<p slot="description">Open a second sheet on top of this one.</p>
 <sheet-trigger>
   <button class="react-aria-Button">Open nested sheet</button>

@@ -54,3 +54,8 @@ a { color: var(--link-color); }
 #open-sheet:active, .gallery > sheet-trigger > .react-aria-Button:active { background: var(--highlight-background-pressed); }
 .react-aria-Button[data-preset] { min-height: 32px; padding: var(--spacing-1) var(--spacing-3); }
 .react-aria-Button.x-close { min-width: 32px; min-height: 32px; padding: 0; border-radius: 50%; }
+
+/* Form content: full-width fields with a small gap; fonts stay at the browser default. */
+sheet-content .fields { display: flex; flex-direction: column; gap: 8px; }
+sheet-content .fields label { display: flex; flex-direction: column; gap: 2px; }
+sheet-content .fields :is(input, textarea) { font: revert; width: 100%; box-sizing: border-box; }
