@@ -81,6 +81,8 @@ Copy `src/` and `styles/` into your project, then:
 
 The starter CSS defines the keyframes `sheet-backdrop` and `sheet-scale-back`.
 
+As in React Aria, the sheet below shows a strip above the sheet on top only when the sheet on top is not taller. Give stacked sheets one fixed height (the React Aria blog demo uses 550px) to keep the strip.
+
 ## Events and control
 
 `sheet-overlay` and `sheet-trigger` dispatch `openchange` (`CustomEvent`, `detail.open`) when the user or the component asks for a change. Without `controlled`, the component opens and closes itself. With `controlled`, you set or remove `open` in the handler:
