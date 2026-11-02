@@ -1,4 +1,4 @@
-import '../src/index.js';
+import { Sheet } from '../src/index.js';
 // Playground: builds a sheet from the form options, shows its code, logs openchange events.
 // Component code lives in ../src; this file only drives it through documented attributes.
 
@@ -36,19 +36,19 @@ ${LOREM.map((p) => `<p>${p}</p>`).join('\n')}`,
   <button type="button" slot="close" class="react-aria-Button">Submit</button>
 </div>`,
   nested: `<p slot="description">Open a second sheet on top of this one.</p>
-<sheet-trigger>
+<div data-sheet-part="trigger">
   <button class="react-aria-Button">Open nested sheet</button>
-  <sheet-overlay>
-    <sheet-backdrop swipe-animation="sheet-backdrop"></sheet-backdrop>
-    <sheet-panel overscroll-padding stack-animation="sheet-scale-back">
+  <div data-sheet-part="overlay">
+    <div data-sheet-part="backdrop" data-sheet-swipe-animation="sheet-backdrop"></div>
+    <div data-sheet-part="panel" data-sheet-overscroll-padding data-sheet-stack-animation="sheet-scale-back">
       <div class="sheet-handle"></div>
-      <sheet-content>
+      <div data-sheet-part="content">
         <h2 slot="title" class="react-aria-Heading">Nested sheet</h2>
         <button slot="close" class="react-aria-Button">Close</button>
-      </sheet-content>
-    </sheet-panel>
-  </sheet-overlay>
-</sheet-trigger>`,
+      </div>
+    </div>
+  </div>
+</div>`,
 };
 
 /** @returns {object} The current form values. */
@@ -74,39 +74,50 @@ function readOptions() {
  */
 function buildHtml(o) {
   const overlayAttrs = [
-    o.position !== 'bottom' && `position="${o.position}"`,
-    o.swipeDirection && `swipe-direction="${o.swipeDirection}"`,
-    o.snapPoints && `snap-points="${o.snapPoints}"`,
-    o.preventDismissal && 'prevent-dismissal',
-    o.controlled && 'controlled',
+    o.position !== 'bottom' && `data-sheet-position="${o.position}"`,
+    o.swipeDirection && `data-sheet-swipe-direction="${o.swipeDirection}"`,
+    o.snapPoints && `data-sheet-snap-points="${o.snapPoints}"`,
+    o.preventDismissal && 'data-sheet-prevent-dismissal',
+    o.controlled && 'data-sheet-controlled',
   ].filter(Boolean);
   const points = o.snapPoints ? o.snapPoints.split(',').length : 0;
   const backdropAttrs = [
-    o.backdropAnimation && 'swipe-animation="sheet-backdrop"',
-    o.backdropAnimation && points > 0 && `swipe-animation-range="${points - 1}"`,
+    o.backdropAnimation && 'data-sheet-swipe-animation="sheet-backdrop"',
+    o.backdropAnimation && points > 0 && `data-sheet-swipe-animation-range="${points - 1}"`,
   ].filter(Boolean);
   const panelAttrs = [
-    o.overscrollPadding && 'overscroll-padding',
-    o.stackAnimation && 'stack-animation="sheet-scale-back"',
+    o.overscrollPadding && 'data-sheet-overscroll-padding',
+    o.stackAnimation && 'data-sheet-stack-animation="sheet-scale-back"',
   ].filter(Boolean);
   const attrs = (list) => (list.length ? ' ' + list.join(' ') : '');
-  const html = `<sheet-trigger${o.dir === 'rtl' ? ' dir="rtl"' : ''}>
+  const html = `<div data-sheet-part="trigger"${o.dir === 'rtl' ? ' dir="rtl"' : ''}>
   <button class="react-aria-Button">Open</button>
-  <sheet-overlay${attrs(overlayAttrs)}>
-    <sheet-backdrop${attrs(backdropAttrs)}></sheet-backdrop>
-    <sheet-panel${attrs(panelAttrs)}>
+  <div data-sheet-part="overlay"${attrs(overlayAttrs)}>
+    <div data-sheet-part="backdrop"${attrs(backdropAttrs)}></div>
+    <div data-sheet-part="panel"${attrs(panelAttrs)}>
       <div class="sheet-handle"></div>
-      <sheet-content>
+      <div data-sheet-part="content">
         <h2 slot="title" class="react-aria-Heading">Playground sheet</h2>
         <button slot="close" class="react-aria-Button">Close</button>
         ${CONTENT[o.content]}
-      </sheet-content>
-    </sheet-panel>
-  </sheet-overlay>
-</sheet-trigger>`;
-  return o.controlled
-    ? `${html}\n<script>\n  overlay.addEventListener('openchange', (e) => { overlay.open = e.detail.open; });\n</script>`
-    : html;
+      </div>
+    </div>
+  </div>
+</div>`;
+  // One Sheet per trigger root, outer first. Call sheet.destroy() before the markup is removed.
+  const create = `const sheets = [...document.querySelectorAll('[data-sheet-part="trigger"]')].map((root) => new Sheet(root));`;
+  const script = o.controlled
+    ? `<script type="module">
+  import { Sheet } from './src/index.js';
+  ${create}
+  const overlay = document.querySelector('[data-sheet-part="overlay"]');
+  overlay.addEventListener('openchange', (e) => { sheets[0].open = e.detail.open; });
+</script>`
+    : `<script type="module">
+  import { Sheet } from './src/index.js';
+  ${create}
+</script>`;
+  return `${html}\n${script}`;
 }
 
 /** Shows the code of the sheet the button will open. */
@@ -125,26 +136,32 @@ function logEvent(detail) {
   }
 }
 
+/** The Sheet instances of the sheet on the stage, outer first. */
+let sheets = [];
+
 /** Builds a fresh sheet tree from the current options and opens it. */
-async function openSheet() {
-  // The button can be pressed before the component module has loaded.
-  await customElements.whenDefined('sheet-overlay');
+function openSheet() {
   const o = readOptions();
   const stage = $('stage');
+  // Destroy the old sheets before their markup goes: an open one has moved its overlay to the body.
+  for (const sheet of sheets) {
+    sheet.destroy();
+  }
   stage.replaceChildren();
-  stage.insertAdjacentHTML('beforeend', buildHtml(o).replace(/<script>[\s\S]*<\/script>/, ''));
-  const trigger = stage.querySelector('sheet-trigger');
+  stage.insertAdjacentHTML('beforeend', buildHtml(o).replace(/<script[\s\S]*<\/script>/, ''));
+  const trigger = stage.querySelector('[data-sheet-part="trigger"]');
   trigger.classList.add('hidden-trigger');
-  const overlay = trigger.querySelector(':scope > sheet-overlay');
+  const overlay = trigger.querySelector(':scope > [data-sheet-part="overlay"]');
+  sheets = [...stage.querySelectorAll('[data-sheet-part="trigger"]')].map((root) => new Sheet(root));
   // openchange does not bubble: the trigger reports for uncontrolled sheets, the overlay for controlled ones.
   trigger.addEventListener('openchange', (e) => logEvent(e.detail));
   overlay.addEventListener('openchange', (e) => {
     logEvent(e.detail);
     if (o.controlled) {
-      overlay.open = e.detail.open;
+      sheets[0].open = e.detail.open;
     }
   });
-  overlay.requestOpen(true);
+  sheets[0].requestOpen(true);
 }
 
 /** Cart: item list with plus/minus buttons and totals. */
@@ -208,3 +225,7 @@ $('copy').addEventListener('click', async () => {
 });
 setupCart();
 renderCode();
+// The gallery sheets are static markup: one Sheet per trigger root, outer first.
+for (const root of document.querySelectorAll('.gallery [data-sheet-part="trigger"]')) {
+  new Sheet(root);
+}

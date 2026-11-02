@@ -28,8 +28,13 @@ function setFlag(element, name, on) {
   }
 }
 
-/** A sheet element with a default class name and the sheet state attributes. */
-export class SheetPart extends HTMLElement {
+/** A part of a sheet (a plain element) with a default class name and the sheet state attributes. */
+export class SheetPart {
+  /** @param {HTMLElement} element The plain element this part drives. */
+  constructor(element) {
+    this.element = element;
+  }
+
   /** Class name applied while open, unless the page gave the element a class of its own. */
   static defaultClass = '';
 
@@ -37,35 +42,37 @@ export class SheetPart extends HTMLElement {
 
   /**
    * Applies the default class name.
-   * @param {import('./sheet-overlay.js').SheetState} _state
+   * @param {import('./sheet.js').SheetState} _state
    */
   mount(_state) {
-    if (!this.classList.length) {
-      this.classList.add(this.constructor.defaultClass);
+    if (!this.element.classList.length) {
+      this.element.classList.add(this.constructor.defaultClass);
       this.#addedDefaultClass = true;
     }
   }
 
   /** Reflects the sheet state as data attributes. */
   render(state) {
-    this.dataset.position = state.position;
-    this.dataset.swipeDirection = state.swipeDirection;
-    this.dataset.stackIndex = state.stackIndex;
-    setFlag(this, 'data-has-descendants', state.descendants.length > 0);
-    setFlag(this, 'data-expanded', state.expanded);
-    setFlag(this, 'data-entering', state.entering);
-    setFlag(this, 'data-exiting', state.exiting);
+    const { element } = this;
+    element.dataset.position = state.position;
+    element.dataset.swipeDirection = state.swipeDirection;
+    element.dataset.stackIndex = state.stackIndex;
+    setFlag(element, 'data-has-descendants', state.descendants.length > 0);
+    setFlag(element, 'data-expanded', state.expanded);
+    setFlag(element, 'data-entering', state.entering);
+    setFlag(element, 'data-exiting', state.exiting);
   }
 
   /** Removes everything `mount` and `render` added. */
   unmount() {
+    const { element } = this;
     if (this.#addedDefaultClass) {
-      this.classList.remove(this.constructor.defaultClass);
+      element.classList.remove(this.constructor.defaultClass);
       this.#addedDefaultClass = false;
     }
-    if (!this.classList.length) {
-      this.removeAttribute('class');
+    if (!element.classList.length) {
+      element.removeAttribute('class');
     }
-    STATE_ATTRIBUTES.forEach((name) => this.removeAttribute(name));
+    STATE_ATTRIBUTES.forEach((name) => element.removeAttribute(name));
   }
 }

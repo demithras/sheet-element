@@ -54,19 +54,21 @@ export function applyAnimationLayers(element, layers) {
 
 /**
  * Builds the layer that plays the element's `swipe-animation` while the sheet is swiped.
- * @param {HTMLElement} element Carries the `swipe-animation` and `swipe-animation-range` attributes.
- * @param {import('./sheet-overlay.js').SheetState} state
+ * @param {HTMLElement} element Carries the `data-sheet-swipe-animation` and `data-sheet-swipe-animation-range` attributes.
+ * @param {import('./sheet.js').SheetState} state
  * @returns {AnimationLayer[]} One layer, or none when the element has no swipe animation.
  */
 export function swipeAnimationLayers(element, state) {
-  const name = element.getAttribute('swipe-animation');
+  const name = element.getAttribute('data-sheet-swipe-animation');
   if (!name) {
     return [];
   }
   const { viewRange, viewDirection, viewIterations } = state.config;
 
   // The range is "start end" as snap point indices; either may be empty.
-  const [startIndex, endIndex] = (element.getAttribute('swipe-animation-range') ?? '').split(' ');
+  const [startIndex, endIndex] = (
+    element.getAttribute('data-sheet-swipe-animation-range') ?? ''
+  ).split(' ');
   const lengthAt = (index, fallback) =>
     index ? toLength(state.snapPoints[Number(index)] ?? fallback) : fallback;
   let start = lengthAt(startIndex, '0%');
@@ -106,7 +108,7 @@ export function swipeAnimationLayers(element, state) {
 /**
  * Builds one layer per sheet above this one, each driven by that sheet's timeline.
  * @param {string | null} name The `@keyframes` name of the `stack-animation`.
- * @param {import('./sheet-overlay.js').SheetState} state
+ * @param {import('./sheet.js').SheetState} state
  * @returns {AnimationLayer[]}
  */
 export function stackAnimationLayers(name, state) {

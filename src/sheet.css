@@ -3,22 +3,22 @@
  * style the react-aria-* class names.
  */
 
-sheet-trigger {
+:where([data-sheet-part='trigger']) {
   display: contents;
 }
 
-sheet-backdrop,
-sheet-panel,
-sheet-content {
+:where([data-sheet-part='backdrop']),
+:where([data-sheet-part='panel']),
+:where([data-sheet-part='content']) {
   display: block;
 }
 
 /* Closed sheets are only markup. An open one has been given its state attributes. */
-sheet-overlay {
+:where([data-sheet-part='overlay']) {
   display: none;
 }
 
-sheet-overlay[data-position] {
+[data-sheet-part='overlay'][data-position] {
   display: block;
   /* absolute rather than fixed so the overlay is not clipped by iOS Safari. */
   position: absolute;
@@ -34,34 +34,34 @@ sheet-overlay[data-position] {
 
 /* More content than 100lvh is visible on iOS Safari, even when the toolbar is collapsed. */
 @supports (-webkit-touch-callout: none) {
-  sheet-overlay[data-position] {
+  [data-sheet-part='overlay'][data-position] {
     --sheet-viewport-padding: calc(100lvh - 100svh + 58px);
   }
 }
 
 /* Where the sheet sits in the stage: [horizontal, vertical]. */
-sheet-overlay[data-position='top'] {
+[data-sheet-part='overlay'][data-position='top'] {
   --sheet-x: center;
   --sheet-y: flex-start;
 }
-sheet-overlay[data-position='bottom'] {
+[data-sheet-part='overlay'][data-position='bottom'] {
   --sheet-x: center;
   --sheet-y: flex-end;
 }
-sheet-overlay[data-position='left'] {
+[data-sheet-part='overlay'][data-position='left'] {
   --sheet-x: flex-start;
   --sheet-y: center;
 }
-sheet-overlay[data-position='right'] {
+[data-sheet-part='overlay'][data-position='right'] {
   --sheet-x: flex-end;
   --sheet-y: center;
 }
-sheet-overlay[data-position='center'] {
+[data-sheet-part='overlay'][data-position='center'] {
   --sheet-x: center;
   --sheet-y: center;
 }
 
-sheet-backdrop {
+:where([data-sheet-part='backdrop']) {
   position: absolute;
   inset: 0;
 }
@@ -146,7 +146,7 @@ sheet-backdrop {
   left: 0;
 }
 
-sheet-panel {
+:where([data-sheet-part='panel']) {
   position: relative;
 }
 
@@ -181,7 +181,7 @@ sheet-panel {
   height: 1px;
 }
 
-sheet-content {
+:where([data-sheet-part='content']) {
   width: 100%;
   height: 100%;
 }

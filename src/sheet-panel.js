@@ -9,7 +9,7 @@ export class SheetPanel extends SheetPart {
   #ownStyles = [];
 
   /**
-   * @param {import('./sheet-overlay.js').SheetState} state
+   * @param {import('./sheet.js').SheetState} state
    */
   mount(state) {
     super.mount(state);
@@ -33,26 +33,29 @@ export class SheetPanel extends SheetPart {
 
   render(state) {
     super.render(state);
-    const stack = stackAnimationLayers(this.getAttribute('stack-animation'), state);
-    applyAnimationLayers(this, [...swipeAnimationLayers(this, state), ...stack]);
+    const stack = stackAnimationLayers(
+      this.element.getAttribute('data-sheet-stack-animation'),
+      state,
+    );
+    applyAnimationLayers(this.element, [...swipeAnimationLayers(this.element, state), ...stack]);
   }
 
   unmount() {
     super.unmount();
-    applyAnimationLayers(this, []);
+    applyAnimationLayers(this.element, []);
     this.#insertedNodes.forEach((node) => node.remove());
     this.#insertedNodes = [];
-    this.#ownStyles.forEach((name) => this.style.removeProperty(name));
+    this.#ownStyles.forEach((name) => this.element.style.removeProperty(name));
     this.#ownStyles = [];
   }
 
   #setStyle(name, value) {
-    this.style.setProperty(name, value);
+    this.element.style.setProperty(name, value);
     this.#ownStyles.push(name);
   }
 
   #insert(node) {
-    this.prepend(node);
+    this.element.prepend(node);
     this.#insertedNodes.push(node);
   }
 
@@ -61,7 +64,10 @@ export class SheetPanel extends SheetPart {
   // the padding from affecting the layout.
   // Returns the extension as `{side, extent}`, or null when there is none.
   #extendBeyondEdge({ position, swipeDirection, config }) {
-    if (!this.hasAttribute('overscroll-padding') || position !== swipeDirection) {
+    if (
+      !this.element.hasAttribute('data-sheet-overscroll-padding') ||
+      position !== swipeDirection
+    ) {
       return null;
     }
     const extent = config.axis === 'y' ? '100vh' : '100vw';

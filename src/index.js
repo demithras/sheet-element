@@ -1,30 +1,20 @@
 /**
- * Defines the sheet custom elements. Import this module once.
+ * Makes sheets from plain markup. No custom elements are registered.
  *
  * ```html
- * <sheet-trigger>
+ * <div data-sheet-part="trigger">
  *   <button>Open</button>
- *   <sheet-overlay>
- *     <sheet-backdrop></sheet-backdrop>
- *     <sheet-panel>
- *       <sheet-content>…</sheet-content>
- *     </sheet-panel>
- *   </sheet-overlay>
- * </sheet-trigger>
+ *   <div data-sheet-part="overlay">
+ *     <div data-sheet-part="backdrop"></div>
+ *     <div data-sheet-part="panel">
+ *       <div data-sheet-part="content">…</div>
+ *     </div>
+ *   </div>
+ * </div>
+ * <script type="module">
+ *   import { Sheet } from './src/index.js';
+ *   const sheet = new Sheet(document.querySelector('[data-sheet-part="trigger"]'));
+ * </script>
  * ```
  */
-import { SheetBackdrop } from './sheet-backdrop.js';
-import { SheetContent } from './sheet-content.js';
-import { SheetOverlay } from './sheet-overlay.js';
-import { SheetPanel } from './sheet-panel.js';
-import { SheetTrigger } from './sheet-trigger.js';
-
-// The overlay goes last: upgrading an overlay that is open moves it out of its trigger and mounts its
-// parts, which must already be defined.
-customElements.define('sheet-trigger', SheetTrigger);
-customElements.define('sheet-backdrop', SheetBackdrop);
-customElements.define('sheet-content', SheetContent);
-customElements.define('sheet-panel', SheetPanel);
-customElements.define('sheet-overlay', SheetOverlay);
-
-export { SheetBackdrop, SheetContent, SheetOverlay, SheetPanel, SheetTrigger };
+export { Sheet } from './sheet.js';

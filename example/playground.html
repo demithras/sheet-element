@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="../styles/Sheet.css" />
     <link rel="stylesheet" href="../src/sheet.css" />
     <link rel="stylesheet" href="playground.css" />
-    <script type="module" src="../src/index.js"></script>
     <script type="module" src="playground.js"></script>
   </head>
   <body>
@@ -58,30 +57,30 @@
       <section class="panel" aria-labelledby="gal-title">
         <h2 id="gal-title">Gallery</h2>
         <div class="gallery">
-          <sheet-trigger>
+          <div data-sheet-part="trigger">
             <button class="react-aria-Button" id="cart-open">Cart (4)</button>
-            <sheet-overlay>
-              <sheet-backdrop swipe-animation="sheet-backdrop"></sheet-backdrop>
-              <sheet-panel overscroll-padding stack-animation="sheet-scale-back">
+            <div data-sheet-part="overlay">
+              <div data-sheet-part="backdrop" data-sheet-swipe-animation="sheet-backdrop"></div>
+              <div data-sheet-part="panel" data-sheet-overscroll-padding data-sheet-stack-animation="sheet-scale-back">
                 <div class="sheet-handle"></div>
-                <sheet-content>
+                <div data-sheet-part="content">
                   <h2 slot="title" class="react-aria-Heading">Your cart</h2>
                   <div id="cart-items"></div>
                   <p class="row tight"><span>Subtotal</span><span id="cart-subtotal"></span></p>
                   <p class="row tight"><span>Delivery</span><span id="cart-delivery"></span></p>
                   <p class="row tight"><strong>Total</strong><strong id="cart-total"></strong></p>
                   <button slot="close" class="react-aria-Button">Place order</button>
-                </sheet-content>
-              </sheet-panel>
-            </sheet-overlay>
-          </sheet-trigger>
-          <sheet-trigger>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div data-sheet-part="trigger">
             <button class="react-aria-Button" id="open-place">Place details</button>
-            <sheet-overlay snap-points="280">
-              <sheet-backdrop swipe-animation="sheet-backdrop" swipe-animation-range="0"></sheet-backdrop>
-              <sheet-panel overscroll-padding stack-animation="sheet-scale-back">
+            <div data-sheet-part="overlay" data-sheet-snap-points="280">
+              <div data-sheet-part="backdrop" data-sheet-swipe-animation="sheet-backdrop" data-sheet-swipe-animation-range="0"></div>
+              <div data-sheet-part="panel" data-sheet-overscroll-padding data-sheet-stack-animation="sheet-scale-back">
                 <div class="sheet-handle"></div>
-                <sheet-content>
+                <div data-sheet-part="content">
                   <h2 slot="title" class="react-aria-Heading">Harborlight Coffee</h2>
                   <p slot="description" class="tight">Coffee shop, 4.6 stars (212 reviews)</p>
                   <p class="tight">12 Quay Street, Harbor Town<br />Open daily 7:00 to 18:00</p>
@@ -92,17 +91,17 @@
                   <div class="review"><strong>Jo</strong>: The cardamom bun is worth the queue.</div>
                   <div class="review"><strong>Pat</strong>: Great beans to take home.</div>
                   <div class="review"><strong>Kim</strong>: Tiny, cosy, a bit loud at noon.</div>
-                </sheet-content>
-              </sheet-panel>
-            </sheet-overlay>
-          </sheet-trigger>
-          <sheet-trigger>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div data-sheet-part="trigger">
             <button class="react-aria-Button" id="open-locked">Non-dismissible</button>
-            <sheet-overlay snap-points="280" prevent-dismissal>
-              <sheet-backdrop swipe-animation="sheet-backdrop" swipe-animation-range="0"></sheet-backdrop>
-              <sheet-panel overscroll-padding stack-animation="sheet-scale-back">
+            <div data-sheet-part="overlay" data-sheet-snap-points="280" data-sheet-prevent-dismissal>
+              <div data-sheet-part="backdrop" data-sheet-swipe-animation="sheet-backdrop" data-sheet-swipe-animation-range="0"></div>
+              <div data-sheet-part="panel" data-sheet-overscroll-padding data-sheet-stack-animation="sheet-scale-back">
                 <div class="sheet-handle"></div>
-                <sheet-content>
+                <div data-sheet-part="content">
                   <h2 slot="title" class="react-aria-Heading">Harborlight Coffee</h2>
                   <p slot="description" class="tight">Coffee shop, 4.6 stars (212 reviews)</p>
                   <p class="tight">12 Quay Street, Harbor Town<br />Open daily 7:00 to 18:00</p>
@@ -113,17 +112,17 @@
                   <div class="review"><strong>Jo</strong>: The cardamom bun is worth the queue.</div>
                   <div class="review"><strong>Pat</strong>: Great beans to take home.</div>
                   <div class="review"><strong>Kim</strong>: Tiny, cosy, a bit loud at noon.</div>
-                </sheet-content>
-              </sheet-panel>
-            </sheet-overlay>
-          </sheet-trigger>
-          <sheet-trigger>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div data-sheet-part="trigger">
             <button class="react-aria-Button" id="open-settings">Sheet stack</button>
-            <sheet-overlay>
-              <sheet-backdrop swipe-animation="sheet-backdrop"></sheet-backdrop>
-              <sheet-panel style="height: 550px" overscroll-padding stack-animation="sheet-scale-back">
+            <div data-sheet-part="overlay">
+              <div data-sheet-part="backdrop" data-sheet-swipe-animation="sheet-backdrop"></div>
+              <div data-sheet-part="panel" style="height: 550px" data-sheet-overscroll-padding data-sheet-stack-animation="sheet-scale-back">
                 <div class="sheet-handle"></div>
-                <sheet-content>
+                <div data-sheet-part="content">
                   <h2 slot="title" class="react-aria-Heading">Settings</h2>
                   <div class="field"><label for="st-home">Homepage</label><input type="text" id="st-home" value="https://example.com" /></div>
                   <fieldset><legend>Theme</legend>
@@ -132,13 +131,13 @@
                     <label><input type="radio" name="theme" /> Dark</label>
                   </fieldset>
                   <button slot="close" class="react-aria-Button">Close</button>
-                  <sheet-trigger>
+                  <div data-sheet-part="trigger">
                     <button class="react-aria-Button" id="open-account">Account</button>
-                    <sheet-overlay>
-                      <sheet-backdrop swipe-animation="sheet-backdrop"></sheet-backdrop>
-                      <sheet-panel style="height: 550px" overscroll-padding stack-animation="sheet-scale-back">
+                    <div data-sheet-part="overlay">
+                      <div data-sheet-part="backdrop" data-sheet-swipe-animation="sheet-backdrop"></div>
+                      <div data-sheet-part="panel" style="height: 550px" data-sheet-overscroll-padding data-sheet-stack-animation="sheet-scale-back">
                         <div class="sheet-handle"></div>
-                        <sheet-content>
+                        <div data-sheet-part="content">
                           <h2 slot="title" class="react-aria-Heading">Account</h2>
                           <div class="field"><label for="st-name">Name</label><input type="text" id="st-name" value="Alex Doe" /></div>
                           <div class="field"><label for="st-user">Username</label><input type="text" id="st-user" value="alexdoe" /></div>
@@ -157,13 +156,13 @@
                           <div class="field"><label for="st-lang">Language</label><input type="text" id="st-lang" value="English" /></div>
                           <button slot="close" class="react-aria-Button">Close</button>
 
-                  <sheet-trigger>
+                  <div data-sheet-part="trigger">
                     <button class="react-aria-Button" id="open-advanced">Advanced</button>
-                    <sheet-overlay>
-                      <sheet-backdrop swipe-animation="sheet-backdrop"></sheet-backdrop>
-                      <sheet-panel style="height: 550px" overscroll-padding stack-animation="sheet-scale-back">
+                    <div data-sheet-part="overlay">
+                      <div data-sheet-part="backdrop" data-sheet-swipe-animation="sheet-backdrop"></div>
+                      <div data-sheet-part="panel" style="height: 550px" data-sheet-overscroll-padding data-sheet-stack-animation="sheet-scale-back">
                         <div class="sheet-handle"></div>
-                        <sheet-content>
+                        <div data-sheet-part="content">
                           <h2 slot="title" class="react-aria-Heading">Advanced</h2>
                           <fieldset><legend>Notifications</legend>
                             <label><input type="checkbox" checked /> Email</label>
@@ -171,32 +170,32 @@
                             <label><input type="checkbox" /> SMS</label>
                           </fieldset>
                           <button slot="close" class="react-aria-Button">Done</button>
-                        </sheet-content>
-                      </sheet-panel>
-                    </sheet-overlay>
-                  </sheet-trigger>
-                        </sheet-content>
-                      </sheet-panel>
-                    </sheet-overlay>
-                  </sheet-trigger>
-                </sheet-content>
-              </sheet-panel>
-            </sheet-overlay>
-          </sheet-trigger>
-          <sheet-trigger>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div data-sheet-part="trigger">
             <button class="react-aria-Button" id="open-swipe">Swipe-linked animation</button>
-            <sheet-overlay snap-points="280">
-              <sheet-backdrop swipe-animation="sheet-backdrop" swipe-animation-range="0"></sheet-backdrop>
-              <sheet-panel overscroll-padding swipe-animation="demo-swipe">
+            <div data-sheet-part="overlay" data-sheet-snap-points="280">
+              <div data-sheet-part="backdrop" data-sheet-swipe-animation="sheet-backdrop" data-sheet-swipe-animation-range="0"></div>
+              <div data-sheet-part="panel" data-sheet-overscroll-padding data-sheet-swipe-animation="demo-swipe">
                 <div class="sheet-handle"></div>
-                <sheet-content>
+                <div data-sheet-part="content">
                   <h2 slot="title" class="react-aria-Heading">Swipe-linked animation</h2>
                   <p slot="description">Corner radius and scale follow your swipe.</p>
                   <button slot="close" class="react-aria-Button">Close</button>
-                </sheet-content>
-              </sheet-panel>
-            </sheet-overlay>
-          </sheet-trigger>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 

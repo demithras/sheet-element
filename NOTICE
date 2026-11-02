@@ -13,5 +13,5 @@ It includes:
   as plain JavaScript.
 - src/keyboard.js: derived from the keyboard handling of React Aria Sheet
   and Modal. Modified: rewritten as plain JavaScript.
-- src/sheet-overlay.js: the visual-viewport handling is derived from React
+- src/sheet.js: the visual-viewport handling is derived from React
   Aria Modal. Modified: rewritten as plain JavaScript.
