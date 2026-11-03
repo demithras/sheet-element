@@ -1,0 +1,57 @@
+name: Deploy Pages (main + plain)
+
+on:
+  push:
+    branches: [main, plain]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: site-main
+
+      - name: Check out plain
+        uses: actions/checkout@v4
+        with:
+          ref: plain
+          path: site-plain
+
+      - name: Assemble site (main at root, plain under /plain/)
+        run: |
+          set -euo pipefail
+          mkdir -p _site/plain
+          rsync -a --exclude='.git' --exclude='.github' site-main/ _site/
+          rsync -a --exclude='.git' --exclude='.github' site-plain/ _site/plain/
+          touch _site/.nojekyll
+          test -f _site/plain/example/playground.html
+          test -f _site/index.html || echo "note: no index.html at the root of main"
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
